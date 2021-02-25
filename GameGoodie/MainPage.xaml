@@ -1,29 +1,58 @@
-﻿<!--We bind the KeyDown event to the Page Object-->
-<!-- UIElement.PreviewKeyDown Event-->
-<!--Occurs when a key is pressed while focus is on this element. Means: Page element)-->
+﻿
     <Page
-    x:Class="GameGoodie.MainPage"
+    x:Class="DodgeGame.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GameGoodie"
+    xmlns:local="using:DodgeGame"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" PreviewKeyDown="Page_PreviewKeyDown"> 
+    mc:Ignorable="d"> 
     <!---end of page description-->
 
     <!--Bottom AppBar-->
     <!--Outside the grid so the grid doen't affect the Command bar-->
     <Page.BottomAppBar>
-        <CommandBar IsSticky="True" IsOpen="True">
+        <CommandBar IsSticky="True" IsRightTapEnabled="False"  IsOpen="True" Foreground="Black" Background="Orange">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Label="Start" Icon="GoToStart" Click="NewGameButton_Click"/>
-                <AppBarButton Label="Pause" Icon="Pause" Click="PauseGameButton_Click"/>
+                <AppBarButton x:Name="btnStartNewgame" ToolTipService.Placement="Top" ToolTipService.ToolTip="Start new Game" FontWeight="Bold" Label="Start New Game" Foreground="Black" Icon="GoToStart" Click="NewGameButton_Click"/>
+                <AppBarButton x:Name="btnPauseGame" ToolTipService.Placement="Top" ToolTipService.ToolTip="Pause" FontWeight="Bold" Label="Pause" Foreground="Black" Icon="Pause" Click="PauseGameButton_Click"/>
+                <AppBarButton x:Name="btnResumeGame" ToolTipService.Placement="Top" ToolTipService.ToolTip="Resume game" FontWeight="Bold" Label="Resume" Foreground="Black" Icon="Play" Click="ResumeGame"/>
+                <AppBarButton x:Name="btnSaveFile" ToolTipService.Placement="Top" ToolTipService.ToolTip="Save game" FontWeight="Bold" Label="Save Game" Foreground="Black" Icon="Save" Click="btnSaveFile_Click"/>
+                <AppBarButton x:Name="btnLoadFile" ToolTipService.Placement="Top" ToolTipService.ToolTip="Load game" FontWeight="Bold" Label="Load Game" Foreground="Black" Icon="Download" Click="btnLoadFile_Click"/>
+
             </CommandBar.PrimaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 
+       
     <!--It's time for grid-->
     <Grid>
+        <!--This is a Custom Content Dialog that will show a Game Over-->
+        <ContentDialog x:Name="GaneOverContentDialog"
+                      
+                       Title="GameOver. Please try again"
+                       PrimaryButtonText="OK"
+                       IsPrimaryButtonEnabled="True"
+                       HorizontalAlignment="Center"
+                      >
+            <StackPanel>
+                <Image Source="Assets/YouLose.gif" Width="500" Height="500"></Image>
+            </StackPanel>
+        </ContentDialog>
+        
+        <!--This is a Custom Dialog Content fo WinGame-->
+        <ContentDialog x:Name="YouWinContentDialog"
+                      
+                       Title="You Win! Congratulations"
+                       PrimaryButtonText="OK"
+                       IsPrimaryButtonEnabled="True"
+                       HorizontalAlignment="Center"
+                      >
+            <StackPanel>
+                <Image Source="Assets/YouWin.gif" Width="500" Height="500"></Image>
+            </StackPanel>
+        </ContentDialog>
+
         <!-- Canvas Element will hold Goodie, and Baddies as it's Children elements-->
         <Canvas Name="CanvasPlayingArea" Background="White"/>
     </Grid>

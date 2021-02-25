@@ -7,8 +7,8 @@
     <ProjectGuid>{53756889-E236-4B32-AC14-DEB571FE52F8}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameGoodie</RootNamespace>
-    <AssemblyName>GameGoodie</AssemblyName>
+    <RootNamespace>DodgeGame</RootNamespace>
+    <AssemblyName>DodgeGame</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
@@ -123,10 +123,17 @@
     <Compile Include="Classes\Creature.cs" />
     <Compile Include="Classes\GameDriver.cs" />
     <Compile Include="Classes\Goodie.cs" />
+    <Compile Include="Classes\MusicManager.cs" />
+    <Compile Include="Classes\SaveDataSchema.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -135,7 +142,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Baddie.png" />
+    <Content Include="Assets\Exlosion.gif" />
     <Content Include="Assets\Goodie.jpg" />
+    <Content Include="Assets\YouLose.gif" />
+    <Content Include="Assets\YouWin.gif" />
+    <Content Include="Music\CollisionBaddie.mp3" />
+    <Content Include="Music\DeadGoodie.mp3" />
+    <Content Include="Music\GameOver.mp3" />
+    <Content Include="Music\IntroMusic.mp3" />
+    <Content Include="Music\LoadGame.mp3" />
+    <Content Include="Music\Mario.mp3" />
+    <Content Include="Music\SaveGame.mp3" />
+    <Content Include="Music\StartGame.mp3" />
+    <Content Include="Music\YouWin.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -156,9 +175,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Json.Net">
+      <Version>1.0.25</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

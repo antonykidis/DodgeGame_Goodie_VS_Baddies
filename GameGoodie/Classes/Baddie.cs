@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace GameGoodie.Classes
+namespace DodgeGame.Classes
 {
     class Baddie:Creature
     {
@@ -14,22 +14,17 @@ namespace GameGoodie.Classes
         int _startTop = 300;
         int _startLeft = 200;
         int _size = 50;
+        int _id = 0;
+      
         
-        /// <summary>
-        /// 1.This Constructor will created Baddie object
-        /// 2.Will set its coordinates based on StartLeft/StartTop
-        /// 3.will Grab the baddie image source and apply it to the baddie object.
-        /// 4.Will Set the baddies coordinates.
-        /// 5.Finally a Baddie object will be added to the playground canvas object as its child.
-        /// </summary>
-        /// <param name="playground"></param>
-        /// <param name="startLeft"></param>
-        /// <param name="startTop"></param>
-        public Baddie(Canvas playground, int startLeft, int startTop) : base("ms-appx:///Assets/Baddie.png")
+        public Baddie(Canvas playground, int startLeft, int startTop, int id) : base("ms-appx:///Assets/Baddie.png")
         {
+            //local members
             _startLeft = startLeft;
             _startTop = startTop;
+            _id = id;
 
+            //Base members
             _BaseCanvasplayground = playground;
             _Baseimg = new Image();
             _Baseimg.Source = new BitmapImage(new Uri(_BaseSrc));
@@ -42,6 +37,17 @@ namespace GameGoodie.Classes
 
             //Put the Baddie into the Canvas as a child
             _BaseCanvasplayground.Children.Add(_Baseimg);
+
+        }
+
+        public int GetId()
+        {
+            return this._id;
+        }
+
+        public void killBaddie()
+        {
+            _BaseCanvasplayground.Children.Remove(_Baseimg); //Renoves ONLY a graphical representation(the object will be removed in GameDriver class)
         }
     }
 }

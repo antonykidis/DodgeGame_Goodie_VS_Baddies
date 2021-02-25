@@ -30,9 +30,9 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="GameGoodie.App">
+      EntryPoint="DodgeGame.App">
       <uap:VisualElements
-        DisplayName="GameGoodie"
+        DisplayName="DodgeGame"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="GameGoodie"
@@ -40,6 +40,16 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="savegame">
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="&apos;/&apos;.">.txt</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>DodgeGame</uap:DisplayName>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
