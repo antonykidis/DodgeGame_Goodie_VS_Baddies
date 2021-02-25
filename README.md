@@ -5,6 +5,9 @@ Minimum requirements: Windows 10
 <h1>Important notice before running the game</h1>
 1. Rebuild the project</br>
 2. Select x64, or x86. Do not select AMR</br>
+See it in action </br>
+https://youtu.be/aA1YHEy4ojA
+</br>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-4.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-1.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-2.png"></img>
