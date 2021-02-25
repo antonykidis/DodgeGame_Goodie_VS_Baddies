@@ -199,32 +199,40 @@ namespace DodgeGame.Classes
 
         internal async void LoadFile()
         {
-           
-            List<SaveDataSchema> _data = new List<SaveDataSchema>();
-            Windows.Storage.StorageFolder storageFolder =  Windows.Storage.ApplicationData.Current.LocalFolder;
-            Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("myconfig.json");
-
-            //Reading Saved Data into String
-            string json_str = await Windows.Storage.FileIO.ReadTextAsync(sampleFile);
-            //Deserialize json and put it into a List
-            _data = JsonConvert.DeserializeObject<List<SaveDataSchema>>(json_str);
-            _savedDataList = _data; //passing data to a global variable. (This list will hold all of the Deserialized Baddies)
-
-            //Clear board BEFORE PROCEEDING
-            ClearBoard();
-            IsGameLoad = true;
-            CreateBoard();
-            SetButtonsOnLoad();
-            _musicManager.PauseBgMusic();
-            await   _musicManager.PlayBackgroundMusicSound();
-
-            isGameisLoaded = true;//-----------------------Set this flag to false to enable New keyEvent in Mainpage after load(otherwise goodie will freeze)
-           
-            loadedTimes++;
-            if (loadedTimes > 1)
+            try
             {
-                IsloadedMorethanOnce = true;
+                List<SaveDataSchema> _data = new List<SaveDataSchema>();
+                Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("myconfig.json");
+
+                //Reading Saved Data into String
+                string json_str = await Windows.Storage.FileIO.ReadTextAsync(sampleFile);
+                //Deserialize json and put it into a List
+                _data = JsonConvert.DeserializeObject<List<SaveDataSchema>>(json_str);
+                _savedDataList = _data; //passing data to a global variable. (This list will hold all of the Deserialized Baddies)
+
+                //Clear board BEFORE PROCEEDING
+                ClearBoard();
+                IsGameLoad = true;
+                CreateBoard();
+                SetButtonsOnLoad();
+                _musicManager.PauseBgMusic();
+                await _musicManager.PlayBackgroundMusicSound();
+
+                isGameisLoaded = true;//-----------------------Set this flag to false to enable New keyEvent in Mainpage after load(otherwise goodie will freeze)
+
+                loadedTimes++;
+                if (loadedTimes > 1)
+                {
+                    IsloadedMorethanOnce = true;
+                }
             }
+            catch (Exception)
+            {
+
+                FileNotExistsMessage();
+            }
+          
         }
 
         internal async void SaveFile()
@@ -554,6 +562,11 @@ namespace DodgeGame.Classes
 
         }
 
+        private async void FileNotExistsMessage()
+        {
+            MessageDialog msg = new MessageDialog("File Not Exists. Please Save file first");
+           await msg.ShowAsync();
+        }
         #endregion CustomMethods
     }
 }
