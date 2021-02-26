@@ -21,54 +21,70 @@ namespace DodgeGame
     public sealed partial class MainPage : Page
     {
         GameDriver _GameDriver; //Public GameDriver Object
-        Image _img;
-        private bool IsGameLoaded { get; }
-        private bool IsPaused;
-     
+        private bool _IsGameLoaded { get; }
+        private bool _IsPaused;
+      
+    
 
         //Constructor-MainPage
         public MainPage()
         {
             this.InitializeComponent();
-            _GameDriver = new GameDriver(CanvasPlayingArea,btnPauseGame,btnResumeGame,btnStartNewgame, btnSaveFile, btnLoadFile, IsGameLoaded, GaneOverContentDialog, YouWinContentDialog); //Initialize GameDriver and pass OUR Canvas, and BUTTONS to it so we can use them in GameDriver.cs
+            _GameDriver = new GameDriver(CanvasPlayingArea,btnPauseGame,btnResumeGame,btnStartNewgame, btnSaveFile, btnLoadFile, _IsGameLoaded, GaneOverContentDialog, YouWinContentDialog, PauseContentDialog); //Initialize GameDriver and pass OUR Canvas, and BUTTONS to it so we can use them in GameDriver.cs
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;   //Register the KeyDown Event with a CoreWindow_KeyDown Method
             SetButtonsToNewGameState(); //Start button state
         }
 
         //What key was pressed
+        //This method fires evetytime you press button
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
-            //Decide what was pressed and behave accordingly.
-            switch (args.VirtualKey)
-            {
-                //Invoke corresponding Method In GameDriver class
-                case VirtualKey.Up: //Using Microsoft.System (Don't forget)
-                    _GameDriver.MoveGoodieUp();
-                    // _GameDriver.MooveGoodieDiagonal();
-                    break;
-                case VirtualKey.Down:
-                    _GameDriver.MoveGoodieDown();
-                    break;
-                case VirtualKey.Left:
-                    _GameDriver.MoveGoodieLeft();
-                    break;
-                case VirtualKey.Right:
-                    _GameDriver.MoveGoodieRight();
-                    break;
-                case VirtualKey.Space:
-                    _GameDriver.PutGoodieAtRandomPlace(); //forgotten feature implementation
-                    break;
-            }
+                switch (args.VirtualKey)
+                {
+                    //Invoke corresponding Method In GameDriver class
+                    case VirtualKey.Up:                                //UP Allowed Only if Game is running
+                    if (_GameDriver.IsGameRunning) {
+                        _GameDriver.MoveGoodieUp();
+                    }  
+                        break;
+
+                    case VirtualKey.Down:                             //Down Allowed Only if Game is running
+                    if (_GameDriver.IsGameRunning==true) {
+                        _GameDriver.MoveGoodieDown();
+                    }
+
+                        break;
+                    case VirtualKey.Left:                             //Left Allowed Only if Game is running
+                    if (_GameDriver.IsGameRunning ==true){
+                        _GameDriver.MoveGoodieLeft();
+                    }
+                        break;
+                    case VirtualKey.Right:                           // Right Allowed Only if Game is running
+                    if (_GameDriver.IsGameRunning ==true) {
+                        _GameDriver.MoveGoodieRight();
+                    }
+                        break;
+                    case VirtualKey.Space:                           //Space Bar Allowed only if game is running
+                    if (_GameDriver.IsGameRunning ==true) {
+                        _GameDriver.PutGoodieAtRandomPlace(); //forgotten feature implementation
+                    }
+                        break;
+                    case VirtualKey.P:                               //Pause Toggle On/off logic  implemented in  _GameDriver.PauseGame()method (GameDriver.cs)
+                    _GameDriver.PauseGame(); //New Feature
+                        break;
+                }
+            
+         
         }
 
         private void NewGameButton_Click(object sender, RoutedEventArgs e)
         {
-            if (IsGameLoaded)
+            if (_IsGameLoaded)
             {
                 FreezeGoodie(); //reset the eventhandler just in case
                 UnFreezeGoodie();
             }
-            else if(IsPaused)
+            else if(_IsPaused)
             {
                 UnFreezeGoodie();
             }
@@ -80,7 +96,7 @@ namespace DodgeGame
 
         private void PauseGameButton_Click(object sender, RoutedEventArgs e)
         {
-            IsPaused = true;
+            _IsPaused = true;
             _GameDriver.StopTimer();                         //Stop The movement of all the baddies on the scree
             FreezeGoodie();
             SetButtonsToPauseState();

@@ -53,6 +53,12 @@
             </StackPanel>
         </ContentDialog>
 
+        <ContentDialog x:Name="PauseContentDialog" HorizontalAlignment="Center" Title="">
+            <StackPanel>
+                <!--<Image Source="Assets/YouWin.gif" Width="500" Height="500"></Image>-->
+                <TextBlock Text="Pause" FontSize="30" HorizontalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </ContentDialog>
         <!-- Canvas Element will hold Goodie, and Baddies as it's Children elements-->
         <Canvas Name="CanvasPlayingArea" Background="White"/>
     </Grid>

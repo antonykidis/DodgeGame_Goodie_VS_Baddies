@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Provider;
 using Windows.Storage.Search;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls; //for Canvas object
@@ -35,9 +36,12 @@ namespace DodgeGame.Classes
         private bool IsSaved;
         private bool IsGameLose;
         private bool IsGameWin;
-        private bool IsGameRunning;
+        public bool IsGameRunning;                             //public flag for unregistering the keyDown event.
         public bool isGameisLoaded { get; set; }
         public bool IsloadedMorethanOnce;
+        private bool IsGameWasPlayedPreviously = false;         //Pause helper - Local
+        public bool IsPaused;                                   //Pause helper For MainPage Code
+        private int PausedTimes = 1;                            //pause helper - Local
 
         private int loadedTimes = 0;
         private int _goodieTop;                                  //Holds CanvasGetTop(needed for Load game)
@@ -47,7 +51,8 @@ namespace DodgeGame.Classes
 
        
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
-       
+
+
         public DispatcherTimer TimerOfTheGame
         {
             get { return _tmr; }
@@ -55,14 +60,15 @@ namespace DodgeGame.Classes
         private MusicManager _musicManager = new MusicManager(); //Music manager(We will manage our music through this object)
         Image _explosionImage = new Image();
         ContentDialog _contentDialogLose = new ContentDialog();      //Holds the custom content dialog for LOSE game
-        ContentDialog _contentDialogWin = new ContentDialog();     //Holds the custom content dialog for WIN game
+        ContentDialog _contentDialogWin = new ContentDialog();       //Holds the custom content dialog for WIN game
+        ContentDialog _contentDialogPauseGame = new ContentDialog(); //Holds The custom Dialog for Pause game
 
         #endregion Members
 
         //GameDriver Constructor
         //By Passing 3 Buttons as a parameters to this GameBoard constructor,
         //we ensure that THIS class will be connected with the MainPage's Physical buttons.
-        public GameDriver(Canvas playgound, AppBarButton pauseGameBtn, AppBarButton resumeGameBtn, AppBarButton startNewGameBtn, AppBarButton saveFileBtn, AppBarButton loadFileBtn, bool isGameisLoaded, ContentDialog contentDialogLose, ContentDialog contentDialogWin)
+        public GameDriver(Canvas playgound, AppBarButton pauseGameBtn, AppBarButton resumeGameBtn, AppBarButton startNewGameBtn, AppBarButton saveFileBtn, AppBarButton loadFileBtn, bool isGameisLoaded, ContentDialog contentDialogLose, ContentDialog contentDialogWin, ContentDialog contentDialogPause)
         {  
             //Game timer
             _tmr.Interval = new TimeSpan(0, 0, 0, 0, 150); //Set 150 milliseconds
@@ -82,6 +88,7 @@ namespace DodgeGame.Classes
             this.isGameisLoaded = isGameisLoaded;
             this._contentDialogLose = contentDialogLose; //Passes the custom content dialog window in game over
             this._contentDialogWin = contentDialogWin; //Passes the custom content dialog for Win
+            this._contentDialogPauseGame = contentDialogPause; //Passes the custom dialog for Pause
         }
 
         private void OnTickHandlerExplosion(object sender, object e)
@@ -124,11 +131,13 @@ namespace DodgeGame.Classes
               //Resume game
              _musicManager.ResumePlayingBGMusic(); //Unpause the music
             _tmr.Start();
+            IsGameRunning = true; //pause helper flag
         }
         internal void StopTimer()
         {
             _musicManager.PauseBgMusic();
             _tmr.Stop(); //stop Music
+            IsGameRunning = false; //pause helper flag
         }
 
         internal void PutGoodieAtRandomPlace()
@@ -374,6 +383,7 @@ namespace DodgeGame.Classes
             _tmr.Stop();                      //Be sure Timer is stopped before continue.
             _tmrExplosion.Stop();             //timer stop
             ClearBoard();                     //Clears board just in case it is not clear.
+            IsGameRunning = false;            //Set flag NOT running for the pause button
 
             //Fresh Start.....................................................................
             _goodie = new Goodie(_playgroundCanvas);  //create new Goodie
@@ -385,6 +395,7 @@ namespace DodgeGame.Classes
                 _goodie = new Goodie(_playgroundCanvas, _goodieTop, _goodieLeft); //Start goddie based on saved data.
                 _tmr.Start();                                                     //Start the timer again.
                 IsGameRunning = true;
+                IsGameWasPlayedPreviously = true;                                 //helps to know if a game was ever started
                 IsGameLoad = false;//----------------Important--------------------//Turn OFF the flag. Otherwise you will start new game from the load!!!!
                 _tmrExplosion.Start();                                            //Start explosion timer
             }
@@ -392,6 +403,8 @@ namespace DodgeGame.Classes
             {    
                 CreateBaddies();             //Create 10 Baddies (important to initialize them before starting timer)
                 _tmr.Start();                //START THE TIMER (Invoke OnTickHandler()Method each 150 milliseconds)
+              
+                IsGameWasPlayedPreviously = true;
                 IsGameRunning = true;
                 _tmrExplosion.Start();       //test explosion timer
             }
@@ -493,13 +506,16 @@ namespace DodgeGame.Classes
         }
         private async void GameOverLoose()
         {
+            IsGameWasPlayedPreviously = false;       //set pause button helper to false (Disables pause Window before game starts)
+            IsGameRunning = false;                   //flag for pause button (put it before await method)
             IsGameLose = true;                        //Set the flag for buttons to be set as OnLoose-state
             SetButtonsOnLooseGame();
             _musicManager.PauseBgMusic();             //Stop current music
-           await _musicManager.PlayGameOverSound();   //Gameover music Invoke
             _tmrExplosion.Stop();
             _tmr.Stop();                              //Important to STOP TIMER before awiat MessageBox!!
-            IsGameRunning = false;
+            await _musicManager.PlayGameOverSound();   //Gameover music Invoke
+                                    
+          
             ClearBoard(); //clear the board before async message!! (clears the board/sets the buttons)
             GameOverMessage();
           
@@ -508,13 +524,15 @@ namespace DodgeGame.Classes
         private async void GameOverWin()
         {
             IsGameWin = true;
+            IsGameWasPlayedPreviously = false;     //set pause button helper to false (Disables pause Window before game starts)
             SetButtonsOnWin();
             _musicManager.PauseBgMusic();          //Stop Current music
 
             await _musicManager.PlayYouWinSound(); //Play win music.
             _tmrExplosion.Stop();
-            _tmr.Stop();    //Important to stop timer before MessageDialog()method. It will cause infinitie loop
-            IsGameRunning = false;
+            _tmr.Stop();                          //Important to stop timer before MessageDialog()method. It will cause infinitie loop
+            IsGameRunning = false;                //Set helper flag for pause button
+           
             YouWinMessage();
             ClearBoard(); //clear the board before async message!! (clears the board, cleaers the baddies List .Sets the buttons)
             
@@ -575,6 +593,38 @@ namespace DodgeGame.Classes
 
             await _contentDialogWin.ShowAsync();
 
+        }
+
+        //Shows The Pause ContentDialog window
+        //Dont forget to Freeze Goodie in this method through the IsPaused bool flag
+        internal async void PauseGame()
+        {
+            IsPaused = true;
+           // PausedTimes =1;
+            _tmr.Stop();
+            _tmrExplosion.Stop();
+           // IsGameRunning = false; //Pause helper flag
+            _musicManager.PauseBgMusic();
+
+
+            if (IsPaused == true && PausedTimes == 1 && IsGameRunning) //First Time paused
+            {
+                IsGameRunning = false;
+                PausedTimes++; //---------------------------//this int variable Sits above in the members
+                await _contentDialogPauseGame.ShowAsync(); //maps to custom Content dialog in MainPage.xaml to show-up
+
+            }
+            else if (IsGameWasPlayedPreviously == true)                     
+            {
+                _tmr.Start();
+                _tmrExplosion.Start();
+                IsGameRunning = true;
+                _musicManager.ResumePlayingBGMusic();
+                _contentDialogPauseGame.Hide();
+
+                IsPaused = false; //reset
+                PausedTimes = 1;  //reset
+            }
         }
 
         private async void FileNotExistsMessage()
