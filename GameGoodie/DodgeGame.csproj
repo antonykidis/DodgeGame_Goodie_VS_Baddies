@@ -141,10 +141,10 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Background.png" />
+    <Content Include="Assets\Background2.png" />
     <Content Include="Assets\Baddie.png" />
     <Content Include="Assets\Exlosion.gif" />
-    <Content Include="Assets\Goodie.jpg" />
+    <Content Include="Assets\Goodie.png" />
     <Content Include="Assets\Intro.gif" />
     <Content Include="Assets\Pause.gif" />
     <Content Include="Assets\YouLose.gif" />

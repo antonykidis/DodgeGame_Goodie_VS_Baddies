@@ -16,7 +16,7 @@ namespace DodgeGame.Classes
         int _size = 50;
 
         //Constructor1 Passing path to base's srs
-        public Goodie(Canvas _playground) : base("ms-appx:///Assets/Goodie.jpg")
+        public Goodie(Canvas _playground) : base("ms-appx:///Assets/Goodie.png")
         {        
             _BaseCanvasplayground = _playground;                  //Pass the Playground Canvas object to Base canvas object
             _Baseimg = new Image();                               //Create a new image within a base class
@@ -35,7 +35,7 @@ namespace DodgeGame.Classes
         }
 
         //Constructor2
-        public Goodie(Canvas _playground, int startTop, int startLeft) : base("ms-appx:///Assets/Goodie.jpg")
+        public Goodie(Canvas _playground, int startTop, int startLeft) : base("ms-appx:///Assets/Goodie.png")
         {
             _BaseCanvasplayground = _playground;                  //Pass the Playground Canvas object to Base canvas object
             _Baseimg = new Image();                               //Create a new image within a base class
