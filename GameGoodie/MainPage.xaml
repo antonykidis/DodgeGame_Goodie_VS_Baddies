@@ -55,7 +55,7 @@
 
         <ContentDialog x:Name="PauseContentDialog" HorizontalAlignment="Center" Title="">
             <StackPanel>
-                <!--<Image Source="Assets/YouWin.gif" Width="500" Height="500"></Image>-->
+                <Image Source="Assets/Pause.gif" Width="300" Height="300"></Image>
                 <TextBlock Text="Pause" FontSize="30" HorizontalAlignment="Center"></TextBlock>
             </StackPanel>
         </ContentDialog>

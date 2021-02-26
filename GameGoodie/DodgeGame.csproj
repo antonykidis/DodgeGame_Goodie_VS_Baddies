@@ -144,6 +144,7 @@
     <Content Include="Assets\Baddie.png" />
     <Content Include="Assets\Exlosion.gif" />
     <Content Include="Assets\Goodie.jpg" />
+    <Content Include="Assets\Pause.gif" />
     <Content Include="Assets\YouLose.gif" />
     <Content Include="Assets\YouWin.gif" />
     <Content Include="Music\CollisionBaddie.mp3" />
