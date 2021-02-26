@@ -55,6 +55,9 @@ namespace DodgeGame
                 case VirtualKey.Right:
                     _GameDriver.MoveGoodieRight();
                     break;
+                case VirtualKey.Space:
+                    _GameDriver.PutGoodieAtRandomPlace(); //forgotten feature implementation
+                    break;
             }
         }
 

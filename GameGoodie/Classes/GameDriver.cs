@@ -44,6 +44,8 @@ namespace DodgeGame.Classes
         private int _goodieLeft;                                 //Holds CanvasGetLeft(needed for load game)
         private int _baddieTopExplosionCoordinates;              //Holds Coordinates for Exoplosion image
         private int _baddieLeftExplosionCoordinates;             //Holds Coordinates for Exoplosion image
+
+       
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
        
         public DispatcherTimer TimerOfTheGame
@@ -127,6 +129,20 @@ namespace DodgeGame.Classes
         {
             _musicManager.PauseBgMusic();
             _tmr.Stop(); //stop Music
+        }
+
+        internal void PutGoodieAtRandomPlace()
+        {
+            //This method fires when user clicks Space Bar
+
+            int GoodieTopRandom = 0;
+            int GoodieLeftRandom = 0;
+            Random rnd = new Random();
+            GoodieLeftRandom = rnd.Next(0, 1000);
+            GoodieTopRandom = rnd.Next(0, 500);
+            _goodie.Destroy(); //Destroy previous goodie.
+            _goodie = new Goodie(_playgroundCanvas, GoodieTopRandom, GoodieLeftRandom); //create randomized Goodie
+
         }
 
         public void CreateBaddies()
@@ -234,7 +250,6 @@ namespace DodgeGame.Classes
             }
           
         }
-
         internal async void SaveFile()
         {
             //SaveData class it is a DataScheme-DataModel
@@ -274,7 +289,7 @@ namespace DodgeGame.Classes
                     IsSaved = true;
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //If file Exists simply delete the previous myconfig.json------------DELETE FILE
                     Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
@@ -357,13 +372,13 @@ namespace DodgeGame.Classes
         private void CreateBoard()
         {
             _tmr.Stop();                      //Be sure Timer is stopped before continue.
-            _tmrExplosion.Stop();
+            _tmrExplosion.Stop();             //timer stop
             ClearBoard();                     //Clears board just in case it is not clear.
 
             //Fresh Start.....................................................................
             _goodie = new Goodie(_playgroundCanvas);  //create new Goodie
 
-            if (IsGameLoad == true)                                               //If game is loaded Create Baddies based on saved data.
+            if (IsGameLoad == true)//----On Game Load-----------------------------//If game is loaded Create Baddies based on saved data.
             {
                 CreateBaddies2();                                                 //Create baddies based on saved data.
                 _goodie.Destroy();                                                //Destroy previous goodie.

@@ -71,10 +71,6 @@ namespace DodgeGame.Classes
             _startTop = startTop;
             _startLeft = startLeft;
 
-            //Set the x,y position of the goodie
-            //Canvas.SetLeft(_Baseimg, startTop);
-            //Canvas.SetTop(_Baseimg, startLeft);
-
         }
     }
 }
