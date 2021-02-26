@@ -23,7 +23,8 @@ namespace DodgeGame
         GameDriver _GameDriver; //Public GameDriver Object
         private bool _IsGameLoaded { get; }
         private bool _IsPaused;
-      
+
+        MusicManager _musicManager = new MusicManager();
     
 
         //Constructor-MainPage
@@ -32,7 +33,7 @@ namespace DodgeGame
             this.InitializeComponent();
             _GameDriver = new GameDriver(CanvasPlayingArea,btnPauseGame,btnResumeGame,btnStartNewgame, btnSaveFile, btnLoadFile, _IsGameLoaded, GaneOverContentDialog, YouWinContentDialog, PauseContentDialog); //Initialize GameDriver and pass OUR Canvas, and BUTTONS to it so we can use them in GameDriver.cs
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;   //Register the KeyDown Event with a CoreWindow_KeyDown Method
-            SetButtonsToNewGameState(); //Start button state
+            SetButtonsToNewGameState(); //Start button state   
         }
 
         //What key was pressed
@@ -170,6 +171,18 @@ namespace DodgeGame
                 //because it will increase Goodie's speed. (We don't want to increase goodie's speed)
                 FreezeGoodie(); 
                 UnFreezeGoodie(); 
+        }
+
+        private async void ShowIntro()
+        {
+          await  NewGameContentDialogWindow.ShowAsync();
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            ShowIntro();
+           await _musicManager.PlayIntroSound();
+            
         }
     }
 }

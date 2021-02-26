@@ -6,7 +6,10 @@
     xmlns:local="using:DodgeGame"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"> 
+    mc:Ignorable="d" Loaded="Page_Loaded">
+    <Page.Background>
+        <ImageBrush ImageSource="/Assets/Background.png" Stretch="Fill"/>
+    </Page.Background>
     <!---end of page description-->
 
     <!--Bottom AppBar-->
@@ -53,6 +56,7 @@
             </StackPanel>
         </ContentDialog>
 
+        <!--Pause Content Dialog-->
         <ContentDialog x:Name="PauseContentDialog" HorizontalAlignment="Center" Title="">
             <StackPanel>
                 <Image Source="Assets/Pause.gif" Width="300" Height="300"></Image>
@@ -60,6 +64,26 @@
             </StackPanel>
         </ContentDialog>
         <!-- Canvas Element will hold Goodie, and Baddies as it's Children elements-->
-        <Canvas Name="CanvasPlayingArea" Background="White"/>
+ 
+        <!--Start Game Dialog-->
+        <ContentDialog x:Name="NewGameContentDialogWindow"
+                       VerticalAlignment="Top"
+                       Title="Welcome to Dodge Game"
+                       PrimaryButtonText="OK"
+                       IsPrimaryButtonEnabled="True"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,0"
+                      >
+            <StackPanel>
+                <Image Source="Assets/Intro.gif" Width="400" Height="400" Margin="0,0,0,0"></Image>
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                 Text=" While Playing a game you can use the following buttons:"></TextBlock>
+                <TextBlock Foreground="Yellow" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Press P to pause the game."></TextBlock>
+                <TextBlock Foreground="Yellow" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Press space bar to place Goodie to a random place on the field."></TextBlock>
+                <TextBlock Foreground="Yellow" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Text="To start a new game click the 'Start New Game' button"></TextBlock>
+            </StackPanel>
+        </ContentDialog>
+
+        <Canvas Name="CanvasPlayingArea"/>
     </Grid>
 </Page>
