@@ -8,6 +8,13 @@ Minimum requirements: Windows 10
 See it in action </br>
 https://youtu.be/aA1YHEy4ojA
 </br>
+<h1>Features</h1>
+Press P to pause the game</br>
+Press Space bar to jump to a random place on the field.</br>
+Save game using a bottom menu.</br>
+Load Game<br>
+
+</br>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-4.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-1.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-2.png"></img>
