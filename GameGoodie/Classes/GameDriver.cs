@@ -263,7 +263,7 @@ namespace DodgeGame.Classes
         {
             //SaveData class it is a DataScheme-DataModel
             List<SaveDataSchema> _simpleBaddiesDataList = new List<SaveDataSchema>(); //List to hold each Baddie X,Y, and ID
-           
+
             #region Explanation Of Schema Object
             //About the trick......................................................
             //_simpleBaddiesDataList will hold the simplified version of _baddies list.
@@ -287,6 +287,7 @@ namespace DodgeGame.Classes
                                                                      CurrentBaddie.GetId(),
                                                                (int)this._goodie.GetTop(),
                                                                (int)this._goodie.GetLeft()));
+            }
                 try
                 {
                     //Finally we can Pass a List of Simple Objects to JsonConvert.SerializeObject() method.
@@ -318,7 +319,7 @@ namespace DodgeGame.Classes
                     IsSaved = true;
 
                 }
-            }
+           
         } 
 
 
