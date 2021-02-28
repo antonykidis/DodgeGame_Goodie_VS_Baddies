@@ -89,9 +89,10 @@ namespace DodgeGame
             {
                 UnFreezeGoodie();
             }
-            FreezeGoodie();//---------Unregister, and register the KeyDown, to pevent unnecessary  Goodie Speed
-            UnFreezeGoodie();
+           
             _GameDriver.NewGame();   //Invoke NewGame() when pressing the Start new game button
+            FreezeGoodie();          //---------Unregister, and register the KeyDown, to pevent unnecessary  Goodie Speed
+            UnFreezeGoodie();
             SetButtonsToPlayState(); //Set buttons to play state
         }
 
