@@ -13,7 +13,7 @@ namespace DodgeGame.Classes
         //This is a Goodie start coordinates
         int _startTop = 500;
         int _startLeft = 300;
-        int _size = 50;
+        int _size = 70;
 
         //Constructor1 Passing path to base's srs
         public Goodie(Canvas _playground) : base("ms-appx:///Assets/Goodie.png")

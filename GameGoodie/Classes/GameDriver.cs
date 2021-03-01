@@ -160,7 +160,7 @@ namespace DodgeGame.Classes
             int _Startleftrandom = 0;
             int _StartTopRandom = 0;
             int _BaddieID = 0;       //Each Baddie has an ID
-            //create baddies in a random maner, at the upper part of the screen.
+            //create baddies in a random maner, at the upper part of the screen. CREATE 10 Baddies
             for (int i = 0; i < 10; i++)
             {
                 _Startleftrandom = rnd.Next(-100, 1400); //Random left
@@ -326,7 +326,7 @@ namespace DodgeGame.Classes
         {
             double Xtop = _goodie.GetTop();
             double YLeft = _goodie.GetLeft();
-            double size = 50;
+            double size = 70;
 
             for (int i = 0; i < _baddies.Count; i++)
             {
@@ -349,10 +349,10 @@ namespace DodgeGame.Classes
                     for (int j = 0; j < _baddies.Count; j++)  //don't  check i against j
                     {
                         //Differenciate each baddie to other Baddie
-                        if (i != j && _baddies[i].GetTop() > _baddies[j].GetTop() - 50
-                                   && _baddies[i].GetTop() < _baddies[j].GetTop() + 50
-                                   && _baddies[i].GetLeft() > _baddies[j].GetLeft() - 50
-                                   && _baddies[i].GetLeft() < _baddies[j].GetLeft() + 50)
+                        if (i != j && _baddies[i].GetTop() > _baddies[j].GetTop() - 70
+                                   && _baddies[i].GetTop() < _baddies[j].GetTop() + 70
+                                   && _baddies[i].GetLeft() > _baddies[j].GetLeft() - 70
+                                   && _baddies[i].GetLeft() < _baddies[j].GetLeft() + 70)
                         {
 
                             _baddieTopExplosionCoordinates = (int)_baddies[i].GetTop();   //Passing coordinates of killed Baddie_Top
@@ -564,8 +564,8 @@ namespace DodgeGame.Classes
             Uri uri = new Uri("ms-appx:///Assets/Exlosion.gif");
             ExplosionImage.Source = new BitmapImage(uri);
             //Apply the size to our new Goodie
-            ExplosionImage.Height = 70;
-            ExplosionImage.Width = 70;
+            ExplosionImage.Height = 100;
+            ExplosionImage.Width = 100;
 
             //Set the x,y position of the Explosion
             Canvas.SetLeft(ExplosionImage, _baddieLeftExplosionCoordinates);

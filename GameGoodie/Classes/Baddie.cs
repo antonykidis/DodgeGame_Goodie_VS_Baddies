@@ -13,10 +13,10 @@ namespace DodgeGame.Classes
 
         int _startTop = 300;
         int _startLeft = 200;
-        int _size = 50;
+        int _size = 70;
         int _id = 0;
-      
-        
+    
+       
         public Baddie(Canvas playground, int startLeft, int startTop, int id) : base("ms-appx:///Assets/Baddie.png")
         {
             //local members

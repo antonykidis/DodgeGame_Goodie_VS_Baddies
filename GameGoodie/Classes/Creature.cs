@@ -14,10 +14,12 @@ namespace DodgeGame.Classes
         protected Canvas _BaseCanvasplayground;
         protected Image _Baseimg; 
         private int _Basestep = 10;
-        private Image baseImage;
         private bool _isAlive;
-       
-       
+
+        Random _rnd = new Random();
+      
+
+
         //property
         public bool Isalive {
             get { return _isAlive; }
@@ -31,12 +33,26 @@ namespace DodgeGame.Classes
         }
 
 
-        public Creature(string src)
+        public Creature(string src) 
         {
-            _BaseSrc = src;
-            _isAlive = true;
-        }
+            if (src == "ms-appx:///Assets/Goodie.png") // Check whether a goodie is goodie
+            {
+                _BaseSrc =  src;
+                _isAlive = true;
+            }
+            else
+            {
+                //Otherwise use a random enemy picture
+                //Download random enemies pictures
+                string Path = _rnd.Next(89, 124).ToString();
+                string EnemyRandomPath = "ms-appx:///Enemies/" + Path + ".png";
+                _BaseSrc = EnemyRandomPath;
+                _isAlive = true;
+            }
 
+          
+        }
+      
 
         public double GetTop()
         {
