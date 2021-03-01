@@ -19,13 +19,15 @@ namespace DodgeGame.Classes
         private MediaElement _saveGameSound = new MediaElement();
         private MediaElement _loadGameSound = new MediaElement();
         private MediaElement _youWinSound = new MediaElement();
+        private MediaElement _ouchSound = new MediaElement();
+
 
         public MusicManager()
         {
 
         }
 
-        //music methods mapped to music
+        //music methods mapped to music members.............................................................
         public async Task<MediaElement> PlayCollisionSound()
         {
             var CollisionSoundElement = new MediaElement();
@@ -119,7 +121,23 @@ namespace DodgeGame.Classes
             GoodieIsDead.Play();
             return GoodieIsDead;
         }
+        public async Task<MediaElement> PlaGoodieOuchSound()
+        {
+            var OuchMusciElement = new MediaElement();
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Music");
+            var file = await folder.GetFileAsync("ai-ai-2.mp3");
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            OuchMusciElement.SetSource(stream, "");
+            OuchMusciElement.Play();
+            OuchMusciElement.Volume = 0.5;   //Play it half volume
+            _ouchSound = OuchMusciElement;
+            return OuchMusciElement;
 
+
+        }
+
+
+        //Public methods to be called from GameDriver.cs.....................................................
         public void StopBgMusic()
         {
             //Stops the background music

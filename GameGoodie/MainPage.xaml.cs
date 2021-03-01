@@ -22,8 +22,6 @@ namespace DodgeGame
     {
         GameDriver _GameDriver; //Public GameDriver Object
         private bool _IsGameLoaded { get; }
-        private bool _IsPaused;
-
         MusicManager _musicManager = new MusicManager();
     
 
@@ -31,7 +29,7 @@ namespace DodgeGame
         public MainPage()
         {
             this.InitializeComponent();
-            _GameDriver = new GameDriver(CanvasPlayingArea,btnPauseGame,btnResumeGame,btnStartNewgame, btnSaveFile, btnLoadFile, _IsGameLoaded, GaneOverContentDialog, YouWinContentDialog, PauseContentDialog); //Initialize GameDriver and pass OUR Canvas, and BUTTONS to it so we can use them in GameDriver.cs
+            _GameDriver = new GameDriver(CanvasPlayingArea,btnPauseGame,btnResumeGame,btnStartNewgame, btnSaveFile, btnLoadFile, _IsGameLoaded, GaneOverContentDialog, YouWinContentDialog, PauseContentDialog, txtLifesLeft); //Initialize GameDriver and pass OUR Canvas, and BUTTONS to it so we can use them in GameDriver.cs
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;   //Register the KeyDown Event with a CoreWindow_KeyDown Method
             SetButtonsToNewGameState(); //Start button state   
         }
@@ -80,34 +78,19 @@ namespace DodgeGame
 
         private void NewGameButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_IsGameLoaded)
-            {
-                FreezeGoodie(); //reset the eventhandler just in case
-                UnFreezeGoodie();
-            }
-            else if(_IsPaused)
-            {
-                UnFreezeGoodie();
-            }
-           
-            _GameDriver.NewGame();   //Invoke NewGame() when pressing the Start new game button
-            FreezeGoodie();          //---------Unregister, and register the KeyDown, to pevent unnecessary  Goodie Speed
+            FreezeGoodie();
             UnFreezeGoodie();
-            SetButtonsToPlayState(); //Set buttons to play state
+            _GameDriver.NewGame();
+
         }
 
         private void PauseGameButton_Click(object sender, RoutedEventArgs e)
         {
-            _IsPaused = true;
-            _GameDriver.StopTimer();                         //Stop The movement of all the baddies on the scree
+            _GameDriver.IsPaused = true;
+            _musicManager.PauseBgMusic();
+            _GameDriver.StopTimer(); //Stop The movement of all the baddies on the scree
             FreezeGoodie();
             SetButtonsToPauseState();
-        }
-
-        //will not be implemented
-        private void Page_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
-        {
-
         }
 
         private void ResumeGame(object sender, RoutedEventArgs e)

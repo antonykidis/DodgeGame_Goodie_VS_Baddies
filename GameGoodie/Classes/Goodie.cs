@@ -15,8 +15,15 @@ namespace DodgeGame.Classes
         int _startLeft = 300;
         int _size = 70;
 
+        private int _lifes;
+        public int LivesLeft
+        {
+            get { return _lifes; }
+            set { _lifes = value; }
+        }
+
         //Constructor1 Passing path to base's srs
-        public Goodie(Canvas _playground) : base("ms-appx:///Assets/Goodie.png")
+        public Goodie(Canvas _playground, int lifes) : base("ms-appx:///Assets/Goodie.png")
         {        
             _BaseCanvasplayground = _playground;                  //Pass the Playground Canvas object to Base canvas object
             _Baseimg = new Image();                               //Create a new image within a base class
@@ -26,6 +33,7 @@ namespace DodgeGame.Classes
             _Baseimg.Height = _size;
             _Baseimg.Width = _size;
 
+            this._lifes = lifes;
             //Set the x,y position of the goodie
             Canvas.SetLeft(_Baseimg, _startLeft);
             Canvas.SetTop(_Baseimg, _startTop);
@@ -35,7 +43,7 @@ namespace DodgeGame.Classes
         }
 
         //Constructor2
-        public Goodie(Canvas _playground, int startTop, int startLeft) : base("ms-appx:///Assets/Goodie.png")
+        public Goodie(Canvas _playground, int startTop, int startLeft, int lifes) : base("ms-appx:///Assets/Goodie.png")
         {
             _BaseCanvasplayground = _playground;                  //Pass the Playground Canvas object to Base canvas object
             _Baseimg = new Image();                               //Create a new image within a base class
@@ -48,6 +56,8 @@ namespace DodgeGame.Classes
             //Set the x,y position of the goodie
             Canvas.SetLeft(_Baseimg, startLeft);
             Canvas.SetTop(_Baseimg, startTop);
+
+            this._lifes = lifes;
 
             //Adding Goodie to The Canvas
             _BaseCanvasplayground.Children.Add(_Baseimg);

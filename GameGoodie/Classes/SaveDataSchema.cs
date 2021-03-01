@@ -17,10 +17,11 @@ namespace DodgeGame.Classes
         public int _IdBaddie { get; set; }
         public int _GoodieStartTop { get; set; }
         public int _GoodieStartLeft { get; set; }
+        public int _LifeIsLeft { get; set; }
       
 
         //constructor
-        public SaveDataSchema(int BaddieStartTop,int BaddieStartLeft, int IdBaddie, int GoodieStartTop, int GoodieStartLeft)
+        public SaveDataSchema(int BaddieStartTop,int BaddieStartLeft, int IdBaddie, int GoodieStartTop, int GoodieStartLeft, int lifeisLeft)
         {
             //Baddie---------------------------------
             this._BaddieStartTop = BaddieStartTop;
@@ -29,6 +30,7 @@ namespace DodgeGame.Classes
            //Goddie----------------------------------
             this._GoodieStartTop = GoodieStartTop;
             this._GoodieStartLeft = GoodieStartLeft;
+            this._LifeIsLeft = lifeisLeft;
          
         }
 

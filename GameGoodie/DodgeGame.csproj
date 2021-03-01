@@ -145,6 +145,7 @@
     <Content Include="Assets\Baddie.png" />
     <Content Include="Assets\Exlosion.gif" />
     <Content Include="Assets\Goodie.png" />
+    <Content Include="Assets\heart.gif" />
     <Content Include="Assets\Intro.gif" />
     <Content Include="Assets\Pause.gif" />
     <Content Include="Assets\YouLose.gif" />
@@ -185,6 +186,7 @@
     <Content Include="Enemies\97.png" />
     <Content Include="Enemies\98.png" />
     <Content Include="Enemies\99.png" />
+    <Content Include="Music\ai-ai-2.mp3" />
     <Content Include="Music\CollisionBaddie.mp3" />
     <Content Include="Music\DeadGoodie.mp3" />
     <Content Include="Music\GameOver.mp3" />
