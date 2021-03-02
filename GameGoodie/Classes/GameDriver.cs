@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace DodgeGame.Classes
 {
-    public  class GameDriver
+    public class GameDriver
     {
         #region MembersOfGameDriver
         // Class members
@@ -23,6 +23,7 @@ namespace DodgeGame.Classes
         Canvas _playgroundCanvas;                              //Holds the actual Canvas(MainPage) with the Player and Enemies
         private DispatcherTimer _tmr = new DispatcherTimer();  //The timer that will move the Enemy
         private DispatcherTimer _tmrExplosion = new DispatcherTimer(); //Timer That removes Explosion Images after 800 milliseconds
+        private DispatcherTimer _tmrImageBlink = new DispatcherTimer(); //timer for blinking Goodie
         public DispatcherTimer TimerOfTheGame
         {
             get { return _tmr; }
@@ -40,13 +41,14 @@ namespace DodgeGame.Classes
         private bool IsSaved;
         private bool IsGameLose;
         private bool IsGameWin;
-        public bool  IsGameRunning;                             //public flag for unregistering the keyDown event.
-        public bool  isGameisLoaded { get; set; }
-        public bool  IsloadedMorethanOnce;
+        public bool IsGameRunning;                             //public flag for unregistering the keyDown event.
+        public bool isGameisLoaded { get; set; }
+        public bool IsloadedMorethanOnce;
         private bool IsGameWasPlayedPreviously = false;          //Pause helper - Local
-        public bool  IsPaused;                                   //Pause helper For MainPage Code
-        private int  PausedTimes = 1;                            //pause helper - Local 
-        private bool _isGoodieHit;     
+        public bool IsPaused;                                   //Pause helper For MainPage Code
+        private int PausedTimes = 1;                            //pause helper - Local 
+        private bool _isGoodieHit;
+
 
         private int loadedTimes = 0;
         private int _goodieTop;                                  //Holds CanvasGetTop(needed for Load game)
@@ -54,6 +56,7 @@ namespace DodgeGame.Classes
         private int _baddieTopExplosionCoordinates;              //Holds Coordinates for Exoplosion image
         private int _baddieLeftExplosionCoordinates;             //Holds Coordinates for Exoplosion image
         public int _lifesLeft;                                   //Coonects this class to MainPage textBox
+        private int CollisionTimes = 0;
         private TextBlock _textBlockGoodieLifeLeft = new TextBlock();
 
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
@@ -65,9 +68,9 @@ namespace DodgeGame.Classes
 
         #endregion Members
 
-        //Constructor.......
+        //Constructor....
         public GameDriver(Canvas playgound, AppBarButton pauseGameBtn, AppBarButton resumeGameBtn, AppBarButton startNewGameBtn, AppBarButton saveFileBtn, AppBarButton loadFileBtn, bool isGameisLoaded, ContentDialog contentDialogLose, ContentDialog contentDialogWin, ContentDialog contentDialogPause, TextBlock textBlockLifesLeft)
-        {  
+        {
             //Game timer.............................................................
             _tmr.Interval = new TimeSpan(0, 0, 0, 0, 150); //Set 150 milliseconds
             _tmr.Tick += OnTickHandler;
@@ -76,9 +79,13 @@ namespace DodgeGame.Classes
             _tmrExplosion.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             _tmrExplosion.Tick += OnTickHandlerExplosion;
 
+            //blink timer
+            _tmrImageBlink.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            _tmrImageBlink.Tick += OnTickGoodieBlinking;
+
 
             //Here we simply Bind the Main Page's  control to this class so we can manipulate them from here.
-            this._playgroundCanvas = playgound;                 
+            this._playgroundCanvas = playgound;
             this._btnPause = pauseGameBtn;
             this._btnResumeGame = resumeGameBtn;
             this._btnStartNewGame = startNewGameBtn;
@@ -91,25 +98,25 @@ namespace DodgeGame.Classes
             this._textBlockGoodieLifeLeft = textBlockLifesLeft;  // passing the mainPage textBlock to local variable
         }
 
-       
+        
         //Create a new Game.....................................
         public async void NewGame()
         {
             _musicManager.StopBgMusic();                   //Stop the music if its already playing(otherwise the music will overlap with the old one)
-           await _musicManager.PlayBackgroundMusicSound(); //Play BGSound
+            await _musicManager.PlayBackgroundMusicSound(); //Play BGSound
             CreateBoard();
         }
 
-        //MAIN ANIMATION METHOD =>>>>>> Enemy Starts Mooving - STARTS ON Pressing the Start Button
+        //MAIN ANIMATION METHODs =>>>>>> Enemy Starts Mooving - STARTS ON Pressing the Start Button
         //Fires EACH 150 miliseconds 
-        private void OnTickHandler(object sender, object e) {
+        private void OnTickHandler(object sender, object e)
+        {
 
             ChaseAfterGoodie(_baddies); //baddies must be assigned before passing to the loop
             BaddieCollision();          //Checks Baddie-baddie collision
             GoodieCollision();          //Checks Baddie-Goodie collision
             CheckWin();                 //Checks Win Condition   
         }
-
         //Fires each 1000 millisecond
         private void OnTickHandlerExplosion(object sender, object e)
         {
@@ -123,14 +130,37 @@ namespace DodgeGame.Classes
 
             //RemoveExplosionFromCanvas();
         }
+        //Fires each 100 milliseconds when goodie hits baddie
+        private void OnTickGoodieBlinking(object sender, object e)
+        {
+            BlinkGoodie();
+        }
 
         #region CustomMethods
 
-        //methods................................................
+        //methods..............
+        private void BlinkGoodie() //blink Goodie on collision.
+        {
+            if (_isGoodieHit)
+            {
+                //Image GoodieImage = new Image();
+                string path = "ms-appx:///Assets/Skull.png";
+                _goodie.BaseImage.Source = new BitmapImage(new Uri(path));
+                _isGoodieHit = false;
+
+            }
+            else 
+            {
+                //Image GoodieImage = new Image();
+                string path2 = "ms-appx:///Assets/Goodie.png";
+                _goodie.BaseImage.Source = new BitmapImage(new Uri(path2));
+                _isGoodieHit = false;
+            }
+        }
         internal void ResumeGame()
         {
-              //Resume game
-             _musicManager.ResumePlayingBGMusic(); //Unpause the music
+            //Resume game
+            _musicManager.ResumePlayingBGMusic(); //Unpause the music
             _tmr.Start();
             IsGameRunning = true; //pause helper flag
         }
@@ -173,8 +203,8 @@ namespace DodgeGame.Classes
         } //Baddies NUST be created BEFORE EVERYTHING
         public void CreateBaddies2()
         {
-            int GoodieTop=0;
-            int GoodieLeft=0;
+            int GoodieTop = 0;
+            int GoodieLeft = 0;
             int GoodiesLifesLeft = 0;
             for (int i = 0; i < _savedDataList.Count; i++)
             {
@@ -187,7 +217,7 @@ namespace DodgeGame.Classes
             //_goodie.SetGoodiePosition(GoodieTop, GoodieLeft);
             _goodieTop = GoodieTop;
             _goodieLeft = GoodieLeft;
-           
+
         } //Baddies Created on Game LOAD
 
         private void ChaseAfterGoodie(List<Baddie> baddies)
@@ -263,7 +293,7 @@ namespace DodgeGame.Classes
 
                 FileNotExistsMessage();
             }
-          
+
         }
         internal async void SaveFile()
         {
@@ -295,42 +325,43 @@ namespace DodgeGame.Classes
                                                                (int)this._goodie.GetLeft(),
                                                                     this._goodie.LivesLeft));
             }
-                try
-                {
-                    //Finally we can Pass a List of Simple Objects to JsonConvert.SerializeObject() method.
-                    // Serialize _data to JSON strinng.
-                    string json = JsonConvert.SerializeObject(_simpleBaddiesDataList.ToArray());
-                    // write string to a file
-                    var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("myconfig.json");
-                    await FileIO.WriteTextAsync(file, json);
-                    IsSaved = true;
+            try
+            {
+                //Finally we can Pass a List of Simple Objects to JsonConvert.SerializeObject() method.
+                // Serialize _data to JSON strinng.
+                string json = JsonConvert.SerializeObject(_simpleBaddiesDataList.ToArray());
+                // write string to a file
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("myconfig.json");
+                await FileIO.WriteTextAsync(file, json);
+                IsSaved = true;
 
-                }
-                catch (Exception)
-                {
-                    //If file Exists simply delete the previous myconfig.json------------DELETE FILE
-                    Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-                    Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("myconfig.json");
+            }
+            catch (Exception)
+            {
+                //If file Exists simply delete the previous myconfig.json------------DELETE FILE
+                Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("myconfig.json");
 
-                    string name = "myconfig.json";
-                    StorageFile manifestFile = await storageFolder.GetFileAsync(name);
-                    await manifestFile.DeleteAsync();
-                    IsSaved = false;
+                string name = "myconfig.json";
+                StorageFile manifestFile = await storageFolder.GetFileAsync(name);
+                await manifestFile.DeleteAsync();
+                IsSaved = false;
 
-                    //Than immediately save a new one------------------------------------SAVE FILE
-                    // Serialize _data to JSON string
-                    string json = JsonConvert.SerializeObject(_simpleBaddiesDataList.ToArray());
-                    // write string to a file
-                    var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("myconfig.json");
-                    await FileIO.WriteTextAsync(file, json);
-                    IsSaved = true;
+                //Than immediately save a new one------------------------------------SAVE FILE
+                // Serialize _data to JSON string
+                string json = JsonConvert.SerializeObject(_simpleBaddiesDataList.ToArray());
+                // write string to a file
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("myconfig.json");
+                await FileIO.WriteTextAsync(file, json);
+                IsSaved = true;
 
-                }
-        } 
+            }
+        }
 
-
+        //Intends to sleep a few milliseconds befor executing
         private void ReduseLife()
         {
+
             _goodie.LivesLeft--;        //Reduce number Goodie's lives (in _goodie object)
             ReduceGoodieLifeOnScreen(); //Reduce number of Goodie's lives (in the MainPage textBlock)
         }
@@ -343,11 +374,11 @@ namespace DodgeGame.Classes
                 _textBlockGoodieLifeLeft.Text = item._LifeIsLeft.ToString();
                 _goodie.LivesLeft = item._LifeIsLeft;
             }
-            
-           
+
+
         }
         private void ReduceGoodieLifeOnScreen()
-        {     
+        {
             _textBlockGoodieLifeLeft.Text = _goodie.LivesLeft.ToString();
         }
 
@@ -357,28 +388,40 @@ namespace DodgeGame.Classes
             double Xtop = _goodie.GetTop();
             double YLeft = _goodie.GetLeft();
             double size = 70;
+            _tmrImageBlink.Start();  ///Timer starts here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TIMER BLINK
+
 
 
             for (int i = 0; i < _baddies.Count; i++)
             {
                 if ((_goodie.GetTop() > _baddies[i].GetTop() - size && _goodie.GetTop() < _baddies[i].GetTop() + size)
                     && _goodie.GetLeft() > _baddies[i].GetLeft() - size && _goodie.GetLeft() < _baddies[i].GetLeft() + size)
-                {
-                    if (_goodie.LivesLeft != 0)
-                    {
-                      await  _musicManager.PlaGoodieOuchSound();
-                        ReduseLife();
-                    }
 
+                {
+                    CollisionTimes++; //on every goodie collision
+                    await _musicManager.PlaGoodieOuchSound();
+                    _isGoodieHit = true;
+                   
+                    //Blink the Goodie image while collision
+                     BlinkGoodie();
+
+                    if (_goodie.LivesLeft != 0 && CollisionTimes == 2)
+                    {
+                        //2 collisions = -1 life of goodie
+                        //do it while goodie is alive
+                        await _musicManager.PlaGoodieOuchSound();
+                        ReduseLife();
+                        CollisionTimes = 0; //Reset the collision counter to make it work
+                    }
 
                     if (_goodie.LivesLeft == 0)
                     {
                         _tmr.Stop();
-
+                        _tmrImageBlink.Stop();
                         await _musicManager.PlayGoodieIsDeadSound();
                         GameOverLoose();
+                        CollisionTimes = 0;
                     }
-
                 }
                 else
                 {
@@ -422,7 +465,7 @@ namespace DodgeGame.Classes
                 //I think it is due to incorrect randomization of the baddies(they get invalid coordinates, or the List of baddies populated to slow)
                 //ANYWAYS IF above code "fucked-up" we just try to start From scratch. Preventing System crash.
                 NewGame();
-            }  
+            }
         }
 
         //Create Board
@@ -430,19 +473,16 @@ namespace DodgeGame.Classes
         {
             _tmr.Stop();                      //Be sure Timer is stopped before continue.
             _tmrExplosion.Stop();             //timer stop
+            _tmrImageBlink.Stop();            //stop blinking timer
             _musicManager.StopBgMusic();      //Stop Background music
             ClearBoard();                     //Clears board just in case it is not clear.
             IsGameRunning = false;            //Set flag NOT running for the pause button
-            //---------------------set flags
-            //isGameisLoaded = false;
-            //IsGameLose = false;
-            //IsGameWin = false;
-            //_isGoodieHit = false;
-            
+
+
 
             //Fresh Start.....................................................................
-            _goodie = new Goodie(_playgroundCanvas,3);                            //create new Goodie with 3 lifes
-            _lifesLeft =  _goodie.LivesLeft;                                      //Will hold the current goodie lifes count
+            _goodie = new Goodie(_playgroundCanvas, 3);                            //create new Goodie with 3 lifes
+            _lifesLeft = _goodie.LivesLeft;                                      //Will hold the current goodie lifes count
             this._textBlockGoodieLifeLeft.Text = _goodie.LivesLeft.ToString();    //set the physical texblock on MainPage
 
             if (IsGameLoad == true)//----On Game Load-----------------------------//If game is loaded Create Baddies based on saved data.
@@ -450,7 +490,7 @@ namespace DodgeGame.Classes
                 CreateBaddies2();                                                 //Create baddies based on saved data.
                 _goodie.Destroy();                                                //Destroy previous goodie.
                 _goodie = new Goodie(_playgroundCanvas, _goodieTop, _goodieLeft, _lifesLeft); //Start goddie based on saved data.
-  
+
                 SetLoadedLivesCounters();   //Onload set the Life counters here!!!
                 _tmr.Start();                                                     //Start the timer again.
                 IsGameRunning = true;
@@ -459,10 +499,10 @@ namespace DodgeGame.Classes
                 _tmrExplosion.Start();                                            //Start explosion timer
             }
             else
-            {    
+            {
                 CreateBaddies();             //Create 10 Baddies (important to initialize them before starting timer)
                 _tmr.Start();                //START THE TIMER (Invoke OnTickHandler()Method each 150 milliseconds)
-              
+
                 IsGameWasPlayedPreviously = true;
                 IsGameRunning = true;
                 _tmrExplosion.Start();       //test explosion timer
@@ -486,7 +526,7 @@ namespace DodgeGame.Classes
             {
                 _goodie.Destroy(); //Destroy  goodie
             }
-           
+
             for (int i = 0; i < _baddies.Count; i++)  //You don't really need this because we cleared the _baddies List above: Line 178
             {
                 if (_baddies[i] != null)
@@ -502,7 +542,7 @@ namespace DodgeGame.Classes
             IsGameWin = false;
             loadedTimes = 0;
             IsloadedMorethanOnce = false;
-           
+
         }
 
         //Set Buttons
@@ -525,23 +565,23 @@ namespace DodgeGame.Classes
             _btnLoadFile.Visibility = Visibility.Visible;
         }   //Buttons On Lose Game
         private void SetPlayButtonState()
-        {        
+        {
             //Here we manipulate the Physical buttons located in MainPage.xaml
-  
-            _btnPause.Visibility        = Visibility.Visible;
-            _btnResumeGame.Visibility   = Visibility.Collapsed;
+
+            _btnPause.Visibility = Visibility.Visible;
+            _btnResumeGame.Visibility = Visibility.Collapsed;
             _btnStartNewGame.Visibility = Visibility.Visible;
-            _btnSaveFile.Visibility     = Visibility.Visible;
-            _btnLoadFile.Visibility     = Visibility.Visible;
-           
+            _btnSaveFile.Visibility = Visibility.Visible;
+            _btnLoadFile.Visibility = Visibility.Visible;
+
         }      //Button on Play State
         private void SetButtonsOnLoad()
         {
-            _btnPause.Visibility        = Visibility.Visible;
-            _btnResumeGame.Visibility   = Visibility.Collapsed;
+            _btnPause.Visibility = Visibility.Visible;
+            _btnResumeGame.Visibility = Visibility.Collapsed;
             _btnStartNewGame.Visibility = Visibility.Visible;
-            _btnSaveFile.Visibility     = Visibility.Visible;
-            _btnLoadFile.Visibility     = Visibility.Visible;
+            _btnSaveFile.Visibility = Visibility.Visible;
+            _btnLoadFile.Visibility = Visibility.Visible;
 
         }        //Buttons on Load state
 
@@ -576,12 +616,12 @@ namespace DodgeGame.Classes
             _tmrExplosion.Stop();
             _tmr.Stop();                              //Important to STOP TIMER before awiat MessageBox!!
             await _musicManager.PlayGameOverSound();   //Gameover music Invoke
-                                    
-          
+
+
             ClearBoard(); //clear the board before async message!! (clears the board/sets the buttons)
             GameOverMessage();
-          
-           
+
+
         }
         private async void GameOverWin()
         {
@@ -594,13 +634,13 @@ namespace DodgeGame.Classes
             _tmrExplosion.Stop();
             _tmr.Stop();                          //Important to stop timer before MessageDialog()method. It will cause infinitie loop
             IsGameRunning = false;                //Set helper flag for pause button
-           
+
             YouWinMessage();
             ClearBoard(); //clear the board before async message!! (clears the board, cleaers the baddies List .Sets the buttons)
-            
-           
+
+
         }
-        
+
 
         //Movements of Player (Goodie)
         public void MoveGoodieUp()
@@ -647,8 +687,8 @@ namespace DodgeGame.Classes
         private async void GameOverMessage()
         {
 
-           await _contentDialogLose.ShowAsync();    
-           
+            await _contentDialogLose.ShowAsync();
+
         }
         private async void YouWinMessage()
         {
@@ -662,7 +702,7 @@ namespace DodgeGame.Classes
         internal async void PauseGame()
         {
             IsPaused = true;
-         
+
             _tmr.Stop();
             _tmrExplosion.Stop();
             _musicManager.PauseBgMusic();
@@ -675,7 +715,7 @@ namespace DodgeGame.Classes
                 await _contentDialogPauseGame.ShowAsync(); //maps to custom Content dialog in MainPage.xaml to show-up
 
             }
-            else if (IsGameWasPlayedPreviously == true)                     
+            else if (IsGameWasPlayedPreviously == true)
             {
                 _tmr.Start();
                 _tmrExplosion.Start();
@@ -691,7 +731,7 @@ namespace DodgeGame.Classes
         private async void FileNotExistsMessage()
         {
             MessageDialog msg = new MessageDialog("File Not Exists. Please Save file first");
-           await msg.ShowAsync();
+            await msg.ShowAsync();
         }
         #endregion CustomMethods
     }

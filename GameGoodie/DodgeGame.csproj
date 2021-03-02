@@ -148,6 +148,7 @@
     <Content Include="Assets\heart.gif" />
     <Content Include="Assets\Intro.gif" />
     <Content Include="Assets\Pause.gif" />
+    <Content Include="Assets\Skull.png" />
     <Content Include="Assets\YouLose.gif" />
     <Content Include="Assets\YouWin.gif" />
     <Content Include="Enemies\100.png" />

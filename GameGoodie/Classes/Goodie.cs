@@ -82,5 +82,11 @@ namespace DodgeGame.Classes
             _startLeft = startLeft;
 
         }
+
+        public void SetGoodieImage(BitmapImage image, string path)
+        {
+            image = new BitmapImage();
+            _Baseimg.Source = new BitmapImage(new Uri(path));
+        }
     }
 }
