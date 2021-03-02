@@ -58,7 +58,7 @@ namespace DodgeGame.Classes
         private int _baddieLeftExplosionCoordinates;             //Holds Coordinates for Exoplosion image
         public int _lifesLeft;                                   //Coonects this class to MainPage textBox
         private int CollisionTimes = 0;
-        private int _ctrCollision = 15;
+        private int _counter_HowLong_ToBlink = 15;
         private TextBlock _textBlockGoodieLifeLeft = new TextBlock();
 
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
@@ -159,21 +159,29 @@ namespace DodgeGame.Classes
 
         private void StartBlinking()
         {
-            if (_isGoodieHit && _ctrCollision != 0 && _isLoopOn)
+            //Creates an effect of dead loop Until a counter equals to ZERO!!!!!
+            //Will Loop between BlinkGoodie(), and UnblinkGoodie() methods until the end of _counter_HowLong_ToBlink == 0
+            //Wen goodie collided set goodie to skull image
+            //When not collided set goode's image to regular goodie.
+            //This method will Fire each 100 milliseconds when you press New Game.
+            if (_isGoodieHit && _counter_HowLong_ToBlink != 0 && _isLoopOn)
             {
-                _ctrCollision--;
-                BlinkGoodie();   //First step >>>> Will Loop between BlinkGoodie(), and UnblinkGoodie() methods until the end of _ctrCollision == 0
+                //if true-goodie collided, set the goodie's image to skull.
+                _counter_HowLong_ToBlink--;
+                BlinkGoodie();                    
             }
-            else if (_ctrCollision == 0)
+            else if (_counter_HowLong_ToBlink == 0) //Stop Blinking when counter iz zero. Counter will Decrease each 100 milliseconds.
             {
-                _ctrCollision = 15;  //How long you want the goodie to blink on collision!?  don't forget to Change the upper member also!!!!!
+                _counter_HowLong_ToBlink = 15;      //set counter to 15 steps.
                 _isLoopOn = false;
                 _isGoodieHit = false;
             }
             else
             {
-                _ctrCollision--;
-                UnblinkGoodie();   //Second step >>>> Will Loop between BlinkGoodie(), and UnblinkGoodie() methods until the end of _ctrCollision == 0
+                //Otherwise set the goodie's image to goodie.
+                //rewriting it over and over again. each 100 milliseconds.
+                _counter_HowLong_ToBlink--;
+                UnblinkGoodie();                    
             }
         }
         private void BlinkGoodie()       
