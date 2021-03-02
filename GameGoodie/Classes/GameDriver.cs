@@ -439,15 +439,15 @@ namespace DodgeGame.Classes
                     //Collision happened>>>>>>>>>>>>>>
                     CollisionTimes++;                            //on every goodie collision
                     await _musicManager.PlaGoodieOuchSound();    //Play Ouch sound
-
                     _isGoodieHit = true;                         // Goodie is Hit flag (helps to animate goodie blinking)
-                    _isLoopOn = true;                             // Goodie blinking loop is true (Will loop  until _counter_HowLong_ToBlink is equal to 0)
+                    _isLoopOn = true;                            // Goodie blinking loop is true (Will loop  until _counter_HowLong_ToBlink is equal to 0)
 
-
-                    if (_goodie.LivesLeft != 0 && CollisionTimes == 2)
+                    //Life Reducing logic.
+                    //Reduces life level only after 2 physical hits.
+                    if (_goodie.LivesLeft != 0 && CollisionTimes == 2) //Play with this value if you want goodie to be stronger.
                     {
-                        //2 collisions = -1 life of goodie
-                        //do it while goodie is alive
+                        //2 collisions = (-1) to life of goodie.
+                        //D it while goodie is alive
                         await _musicManager.PlaGoodieOuchSound();
                         ReduseLife();
                         CollisionTimes = 0; //Reset the collision counter to make it work
