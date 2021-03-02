@@ -156,7 +156,6 @@ namespace DodgeGame.Classes
         //Blinking Goodie  contains 3 methods: StartBlinking(), Blink(), Unblink()
         //THESE METHODS fires-up each 50 milliseconds.
         //If private bool _isGoodieHit, and private bool _isLoopOn, are set to true
-
         private void StartBlinking()
         {
             //Creates an effect of dead loop Until a counter equals to ZERO!!!!!
@@ -189,16 +188,16 @@ namespace DodgeGame.Classes
                  string path = "ms-appx:///Assets/Skull.png";
                 _goodie.BaseImage.Source = new BitmapImage(new Uri(path));
                 _isGoodieHit = false;//Helps to mimic Dead loop blinking between Goodie, and skull
-
         }  //blink Goodie
         private void UnblinkGoodie()
         {
-          
             string path2 = "ms-appx:///Assets/Goodie.png";
             _goodie.BaseImage.Source = new BitmapImage(new Uri(path2));
             _isGoodieHit = true; //Helps to mimic Dead loop blinking between Goodie, and skull
         }       //Unblink
         #endregion #region Blinking Goodie Logic
+
+
 
         internal void ResumeGame()
         {
@@ -431,20 +430,18 @@ namespace DodgeGame.Classes
             double Xtop = _goodie.GetTop();
             double YLeft = _goodie.GetLeft();
             double size = 70;
-            //_tmrImageBlink.Start();  ///Timer starts here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TIMER BLINK
-
-
-
+          
             for (int i = 0; i < _baddies.Count; i++)
             {
                 if ((_goodie.GetTop() > _baddies[i].GetTop() - size && _goodie.GetTop() < _baddies[i].GetTop() + size)
                     && _goodie.GetLeft() > _baddies[i].GetLeft() - size && _goodie.GetLeft() < _baddies[i].GetLeft() + size)
                 {
-                    CollisionTimes++;    //on every goodie collision
-                    await _musicManager.PlaGoodieOuchSound();
+                    //Collision happened>>>>>>>>>>>>>>
+                    CollisionTimes++;                            //on every goodie collision
+                    await _musicManager.PlaGoodieOuchSound();    //Play Ouch sound
 
-                    _isGoodieHit = true; // Goodie is Hit flag (helps to animate goodie blinking)
-                    _isLoopOn = true;    // Goodie blinking loop is true (Will loop  until _ctrKollision = 15; is equal to 0)
+                    _isGoodieHit = true;                         // Goodie is Hit flag (helps to animate goodie blinking)
+                    _isLoopOn = true;                             // Goodie blinking loop is true (Will loop  until _counter_HowLong_ToBlink is equal to 0)
 
 
                     if (_goodie.LivesLeft != 0 && CollisionTimes == 2)
