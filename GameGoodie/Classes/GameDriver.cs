@@ -47,7 +47,8 @@ namespace DodgeGame.Classes
         private bool IsGameWasPlayedPreviously = false;          //Pause helper - Local
         public bool IsPaused;                                   //Pause helper For MainPage Code
         private int PausedTimes = 1;                            //pause helper - Local 
-        private bool _isGoodieHit;
+        private bool _isGoodieHit;  //Blinking Goodie Helper 1
+        private bool _isLoopOn;     //Blinking Goodie helper 2
 
 
         private int loadedTimes = 0;
@@ -57,6 +58,7 @@ namespace DodgeGame.Classes
         private int _baddieLeftExplosionCoordinates;             //Holds Coordinates for Exoplosion image
         public int _lifesLeft;                                   //Coonects this class to MainPage textBox
         private int CollisionTimes = 0;
+        private int _ctrCollision = 15;
         private TextBlock _textBlockGoodieLifeLeft = new TextBlock();
 
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
@@ -80,7 +82,7 @@ namespace DodgeGame.Classes
             _tmrExplosion.Tick += OnTickHandlerExplosion;
 
             //blink timer
-            _tmrImageBlink.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            _tmrImageBlink.Interval = new TimeSpan(0, 0, 0, 0, 50);
             _tmrImageBlink.Tick += OnTickGoodieBlinking;
 
 
@@ -130,33 +132,66 @@ namespace DodgeGame.Classes
 
             //RemoveExplosionFromCanvas();
         }
-        //Fires each 100 milliseconds when goodie hits baddie
+        
         private void OnTickGoodieBlinking(object sender, object e)
         {
-            BlinkGoodie();
+            //This method will fire each 100 miliseconds when game is started.
+            //Creates a blinking effect on Goodie, when a goodie collided with baddies.
+            //When Goodie Collides with baddie this will set up 2 flag-bool-variables
+            //1. _isGoodieHit =true
+            //2. _isLoopOn    =true
+            //Which turns on the blinking effect.
+            //To test this feature simply Set _isLoopOn=true (in the above members)
+            //It will Fire StartBlinking method for a fewa seconds. Based on counter _ctrCollision = 15 (se above members)
+            //When _ctrCollision counter variable will equals to zero, The blinking effect will stop.
+            //But the timer will continue working.(ticking)
+
+            StartBlinking();//FIRE THIS EACH 100 Milliseconds
         }
 
         #region CustomMethods
 
         //methods..............
-        private void BlinkGoodie() //blink Goodie on collision.
-        {
-            if (_isGoodieHit)
-            {
-                //Image GoodieImage = new Image();
-                string path = "ms-appx:///Assets/Skull.png";
-                _goodie.BaseImage.Source = new BitmapImage(new Uri(path));
-                _isGoodieHit = false;
+        #region Blinking Goodie Logic
+        //Blinking Goodie  contains 3 methods: StartBlinking(), Blink(), Unblink()
+        //THESE METHODS fires-up each 50 milliseconds.
+        //If private bool _isGoodieHit, and private bool _isLoopOn, are set to true
 
-            }
-            else 
+        private void StartBlinking()
+        {
+            if (_isGoodieHit && _ctrCollision != 0 && _isLoopOn)
             {
-                //Image GoodieImage = new Image();
-                string path2 = "ms-appx:///Assets/Goodie.png";
-                _goodie.BaseImage.Source = new BitmapImage(new Uri(path2));
+                _ctrCollision--;
+                BlinkGoodie();   //First step >>>> Will Loop between BlinkGoodie(), and UnblinkGoodie() methods until the end of _ctrCollision == 0
+            }
+            else if (_ctrCollision == 0)
+            {
+                _ctrCollision = 15;  //How long you want the goodie to blink on collision!?  don't forget to Change the upper member also!!!!!
+                _isLoopOn = false;
                 _isGoodieHit = false;
+            }
+            else
+            {
+                _ctrCollision--;
+                UnblinkGoodie();   //Second step >>>> Will Loop between BlinkGoodie(), and UnblinkGoodie() methods until the end of _ctrCollision == 0
             }
         }
+        private void BlinkGoodie()       
+        {
+                 string path = "ms-appx:///Assets/Skull.png";
+                _goodie.BaseImage.Source = new BitmapImage(new Uri(path));
+                _isGoodieHit = false;//Helps to mimic Dead loop blinking between Goodie, and skull
+
+        }  //blink Goodie
+        private void UnblinkGoodie()
+        {
+          
+            string path2 = "ms-appx:///Assets/Goodie.png";
+            _goodie.BaseImage.Source = new BitmapImage(new Uri(path2));
+            _isGoodieHit = true; //Helps to mimic Dead loop blinking between Goodie, and skull
+        }       //Unblink
+        #endregion #region Blinking Goodie Logic
+
         internal void ResumeGame()
         {
             //Resume game
@@ -388,7 +423,7 @@ namespace DodgeGame.Classes
             double Xtop = _goodie.GetTop();
             double YLeft = _goodie.GetLeft();
             double size = 70;
-            _tmrImageBlink.Start();  ///Timer starts here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TIMER BLINK
+            //_tmrImageBlink.Start();  ///Timer starts here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TIMER BLINK
 
 
 
@@ -396,14 +431,13 @@ namespace DodgeGame.Classes
             {
                 if ((_goodie.GetTop() > _baddies[i].GetTop() - size && _goodie.GetTop() < _baddies[i].GetTop() + size)
                     && _goodie.GetLeft() > _baddies[i].GetLeft() - size && _goodie.GetLeft() < _baddies[i].GetLeft() + size)
-
                 {
-                    CollisionTimes++; //on every goodie collision
+                    CollisionTimes++;    //on every goodie collision
                     await _musicManager.PlaGoodieOuchSound();
-                    _isGoodieHit = true;
-                   
-                    //Blink the Goodie image while collision
-                     BlinkGoodie();
+
+                    _isGoodieHit = true; // Goodie is Hit flag (helps to animate goodie blinking)
+                    _isLoopOn = true;    // Goodie blinking loop is true (Will loop  until _ctrKollision = 15; is equal to 0)
+
 
                     if (_goodie.LivesLeft != 0 && CollisionTimes == 2)
                     {
@@ -425,7 +459,7 @@ namespace DodgeGame.Classes
                 }
                 else
                 {
-                    _isGoodieHit = false;
+                   // _isGoodieHit = false;
                 }
             }
         }
@@ -493,6 +527,7 @@ namespace DodgeGame.Classes
 
                 SetLoadedLivesCounters();   //Onload set the Life counters here!!!
                 _tmr.Start();                                                     //Start the timer again.
+                _tmrImageBlink.Start();                                           //TIMER BLINK will wait for Goodie Collision with baddies
                 IsGameRunning = true;
                 IsGameWasPlayedPreviously = true;                                 //helps to know if a game was ever started
                 IsGameLoad = false;//----------------Important--------------------//Turn OFF the flag. Otherwise you will start new game from the load!!!!
@@ -502,6 +537,7 @@ namespace DodgeGame.Classes
             {
                 CreateBaddies();             //Create 10 Baddies (important to initialize them before starting timer)
                 _tmr.Start();                //START THE TIMER (Invoke OnTickHandler()Method each 150 milliseconds)
+                _tmrImageBlink.Start();      //TIMER BLINK will wait for Goodie Collision with baddies
 
                 IsGameWasPlayedPreviously = true;
                 IsGameRunning = true;
@@ -542,6 +578,9 @@ namespace DodgeGame.Classes
             IsGameWin = false;
             loadedTimes = 0;
             IsloadedMorethanOnce = false;
+            _isGoodieHit = false; // Goodie is Hit flag (helps to animate goodie blinking)
+            _isLoopOn = false;    // Goodie blinking loop is true (Will loop  until _ctrKollision = 15; is equal to 0)
+
 
         }
 
