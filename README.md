@@ -6,7 +6,7 @@ Minimum requirements: Windows 10
 1. Rebuild the project</br>
 2. Select x64, or x86. Do not select AMR</br>
 See it in action </br>
-https://youtu.be/aA1YHEy4ojA
+https://youtu.be/m45LWGudOs8
 </br>
 <h1>Features</h1>
 Press P to pause the game</br>
