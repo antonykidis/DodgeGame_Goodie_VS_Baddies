@@ -64,6 +64,8 @@ namespace DodgeGame.Classes
         List<Image> _ExplosionImgList = new List<Image>();       //Holds the List of ExplosionImages
         private MusicManager _musicManager = new MusicManager(); //Music manager(We will manage our music through this object)
         Image _explosionImage = new Image();
+
+        //Content dialog. This will map us to a Main Page.xaml
         ContentDialog _contentDialogLose = new ContentDialog();      //Holds the custom content dialog for LOSE game
         ContentDialog _contentDialogWin = new ContentDialog();       //Holds the custom content dialog for WIN game
         ContentDialog _contentDialogPauseGame = new ContentDialog(); //Holds The custom Dialog for Pause game

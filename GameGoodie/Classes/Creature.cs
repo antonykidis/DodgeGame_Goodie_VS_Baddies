@@ -15,11 +15,8 @@ namespace DodgeGame.Classes
         protected Image _Baseimg; 
         private int _Basestep = 10;
         private bool _isAlive;
-
         Random _rnd = new Random();
-      
-
-
+     
         //property
         public bool Isalive {
             get { return _isAlive; }

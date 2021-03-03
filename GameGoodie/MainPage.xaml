@@ -21,7 +21,6 @@
                 <AppBarButton x:Name="btnResumeGame" ToolTipService.Placement="Top" ToolTipService.ToolTip="Resume game" FontWeight="Bold" Label="Resume" Foreground="Black" Icon="Play" Click="ResumeGame"/>
                 <AppBarButton x:Name="btnSaveFile" ToolTipService.Placement="Top" ToolTipService.ToolTip="Save game" FontWeight="Bold" Label="Save Game" Foreground="Black" Icon="Save" Click="btnSaveFile_Click"/>
                 <AppBarButton x:Name="btnLoadFile" ToolTipService.Placement="Top" ToolTipService.ToolTip="Load game" FontWeight="Bold" Label="Load Game" Foreground="Black" Icon="Download" Click="btnLoadFile_Click"/>
-
             </CommandBar.PrimaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
@@ -30,9 +29,9 @@
     <!--It's time for grid-->
     <Grid>
         <Grid.RowDefinitions>
-           
-            
+          <!--That is a draft to hold the Heart image abd counter of life-->       
         </Grid.RowDefinitions>
+        
         <!--This is a Custom Content Dialog that will show a Game Over-->
         <ContentDialog x:Name="GaneOverContentDialog"
                       
