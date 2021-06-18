@@ -16,7 +16,7 @@ Load Game<br>
 
 </br>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-4.png"></img>
-<img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-1.png"></img>
+<img src="https://github.com/antonykidis/DodgeGame_Goodie_VS_Baddies/blob/master/GoddieVSBaddies.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-2.png"></img>
 <img src="https://github.com/antonykidis/GameGoodie/blob/master/goddie-3.png"></img>
 </br>
